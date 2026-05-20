@@ -33,3 +33,8 @@ go mod tidy
 ```
 
 This command is used to clean up the `go.mod` file by removing any dependencies that are no longer needed and adding any missing dependencies. It ensures that the `go.mod` file accurately reflects the dependencies required by the project. Running `go mod tidy` can help keep your module's dependencies organized and up to date.
+
+:= initialises a variable and infers the type of it based on its value. really cool.
+can also do `var x string` etc.
+
+useful: `go mod edit -replace example.com/greetings=../greetings` to replace a module with a local path for testing purposes. This allows you to use a local version of the `greetings` module instead of fetching it from a remote repository.
