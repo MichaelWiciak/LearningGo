@@ -41,4 +41,12 @@ useful: `go mod edit -replace example.com/greetings=../greetings` to replace a m
 
 A slice is like an array, except that its size changes dynamically as you add and remove items.
 
-`go test` read module's tests.
+`go test` read module's tests. has the `-v` flag for verbose output.
+
+`go build` build correct dir.
+
+`go list -f '{{.Target}}'` to get the path of the built binary.
+
+`go install` once we have it in Path the dir of the module?
+
+and then can just run the module by calling the name of the package. export it to the .bash file to have it on permanently.
