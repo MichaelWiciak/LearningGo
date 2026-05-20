@@ -27,3 +27,9 @@ This command compiles the Go source code in the `x.go` file and produces an exec
 ```
 
 This command is used to execute the compiled binary named `x`.
+
+```bash
+go mod tidy
+```
+
+This command is used to clean up the `go.mod` file by removing any dependencies that are no longer needed and adding any missing dependencies. It ensures that the `go.mod` file accurately reflects the dependencies required by the project. Running `go mod tidy` can help keep your module's dependencies organized and up to date.
