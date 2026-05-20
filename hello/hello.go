@@ -20,6 +20,6 @@ func main() {
 	log.SetFlags(0)
 
 	messagePrinting("Gladys")
-	messagePrinting("")
+	messagePrinting("Sam")
 	
 }
