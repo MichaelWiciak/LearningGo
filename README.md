@@ -40,3 +40,5 @@ can also do `var x string` etc.
 useful: `go mod edit -replace example.com/greetings=../greetings` to replace a module with a local path for testing purposes. This allows you to use a local version of the `greetings` module instead of fetching it from a remote repository.
 
 A slice is like an array, except that its size changes dynamically as you add and remove items.
+
+`go test` read module's tests.
