@@ -33,3 +33,5 @@ go.work.sum
 
 # Ignore executables
 */bin/*
+
+workspace/example/*
