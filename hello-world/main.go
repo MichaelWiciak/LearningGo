@@ -14,8 +14,7 @@ func Quote() string {
 	return quote.Go()
 }
 
-func main(){
+func main() {
 	fmt.Println(HelloWorld())
 	fmt.Println(Quote())
 }
-

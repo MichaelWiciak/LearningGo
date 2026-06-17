@@ -8,7 +8,7 @@ import (
 
 func TestHelloName(t *testing.T) {
 	name := "Bob"
-	want := regexp.MustCompile(`\b`+name+`\b`)
+	want := regexp.MustCompile(`\b` + name + `\b`)
 	message, err := Hello(name)
 	if !want.MatchString(message) || err != nil {
 		t.Errorf(`Hello("%s") = %q, %v, want match for %#q, nil`, name, message, err, want)
