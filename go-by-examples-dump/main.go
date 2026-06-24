@@ -238,6 +238,19 @@ func maps_examples() {
 	}
 }
 
+func variadic_function_len_args(args ...int) {
+	// Can just pass the slice into it as well directly. 
+	fmt.Println(args, " ")
+	total := 0
+
+	for _, arg := range args {
+		total += arg
+	}
+
+	fmt.Println(total)
+}
+
+
 func main() {
 
 	functions := []Function{
@@ -247,6 +260,7 @@ func main() {
 		{"arrays", arrays},
 		{"slices", slices_example},
 		{"maps", maps_examples},
+		{"variadic function", func() { variadic_function_len_args(1, 2, 3, 4, 5) }},
 	}
 
 	for _, f := range functions {
