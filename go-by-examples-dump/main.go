@@ -239,7 +239,7 @@ func maps_examples() {
 }
 
 func variadic_function_len_args(args ...int) {
-	// Can just pass the slice into it as well directly. 
+	// returns the sum of the supplied int arguments
 	fmt.Println(args, " ")
 	total := 0
 
@@ -250,6 +250,33 @@ func variadic_function_len_args(args ...int) {
 	fmt.Println(total)
 }
 
+func variadic_function_caller() {
+	variadic_function_len_args(1, 2)
+	variadic_function_len_args(1, 2, 3)
+
+	nums := []int{1, 2, 3, 4}
+	variadic_function_len_args(nums...)
+}
+
+func intSeq() func() int {
+    i := 0
+    return func() int {
+        i++
+        return i
+    }
+}
+
+func closures_lambdas() {
+
+    nextInt := intSeq()
+
+    fmt.Println(nextInt())
+    fmt.Println(nextInt())
+    fmt.Println(nextInt())
+
+    newInts := intSeq()
+    fmt.Println(newInts())
+}
 
 func main() {
 
@@ -260,7 +287,8 @@ func main() {
 		{"arrays", arrays},
 		{"slices", slices_example},
 		{"maps", maps_examples},
-		{"variadic function", func() { variadic_function_len_args(1, 2, 3, 4, 5) }},
+		{"variadic function", variadic_function_caller},
+		{"closures and lambdas", closures_lambdas},
 	}
 
 	for _, f := range functions {
