@@ -301,6 +301,36 @@ func recursive_functions() {
     fmt.Println(fib(7))
 }
 
+
+func using_range_over_builtin_types() {
+
+    nums := []int{2, 3, 4}
+    sum := 0
+    for _, num := range nums {
+        sum += num
+    }
+    fmt.Println("sum:", sum)
+
+    for i, num := range nums {
+        if num == 3 {
+            fmt.Println("index:", i)
+        }
+    }
+
+    kvs := map[string]string{"a": "apple", "b": "banana"}
+    for k, v := range kvs {
+        fmt.Printf("%s -> %s\n", k, v)
+    }
+
+    for k := range kvs {
+        fmt.Println("key:", k)
+    }
+
+    for i, c := range "go" {
+        fmt.Println(i, c)
+    }
+}
+
 func main() {
 
 	functions := []Function{
@@ -313,6 +343,7 @@ func main() {
 		{"variadic function", variadic_function_caller},
 		{"closures and lambdas", closures_lambdas},
 		{"recursive functions", recursive_functions},
+		{"using range over builtin types", using_range_over_builtin_types},
 	}
 
 	for _, f := range functions {
