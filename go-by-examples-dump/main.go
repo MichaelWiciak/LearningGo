@@ -259,76 +259,96 @@ func variadic_function_caller() {
 }
 
 func intSeq() func() int {
-    i := 0
-    return func() int {
-        i++
-        return i
-    }
+	i := 0
+	return func() int {
+		i++
+		return i
+	}
 }
 
 func closures_lambdas() {
 
-    nextInt := intSeq()
+	nextInt := intSeq()
 
-    fmt.Println(nextInt())
-    fmt.Println(nextInt())
-    fmt.Println(nextInt())
+	fmt.Println(nextInt())
+	fmt.Println(nextInt())
+	fmt.Println(nextInt())
 
-    newInts := intSeq()
-    fmt.Println(newInts())
+	newInts := intSeq()
+	fmt.Println(newInts())
 }
 
 func fact(n int) int {
-    if n == 0 {
-        return 1
-    }
-    return n * fact(n-1)
+	if n == 0 {
+		return 1
+	}
+	return n * fact(n-1)
 }
 
 func recursive_functions() {
-    fmt.Println(fact(7))
+	fmt.Println(fact(7))
 
-    var fib func(n int) int
+	var fib func(n int) int
 
-    fib = func(n int) int {
-        if n < 2 {
-            return n
-        }
+	fib = func(n int) int {
+		if n < 2 {
+			return n
+		}
 
-        return fib(n-1) + fib(n-2)
-    }
+		return fib(n-1) + fib(n-2)
+	}
 
-    fmt.Println(fib(7))
+	fmt.Println(fib(7))
 }
-
 
 func using_range_over_builtin_types() {
 
-    nums := []int{2, 3, 4}
-    sum := 0
-    for _, num := range nums {
-        sum += num
-    }
-    fmt.Println("sum:", sum)
+	nums := []int{2, 3, 4}
+	sum := 0
+	for _, num := range nums {
+		sum += num
+	}
+	fmt.Println("sum:", sum)
 
-    for i, num := range nums {
-        if num == 3 {
-            fmt.Println("index:", i)
-        }
-    }
+	for i, num := range nums {
+		if num == 3 {
+			fmt.Println("index:", i)
+		}
+	}
 
-    kvs := map[string]string{"a": "apple", "b": "banana"}
-    for k, v := range kvs {
-        fmt.Printf("%s -> %s\n", k, v)
-    }
+	kvs := map[string]string{"a": "apple", "b": "banana"}
+	for k, v := range kvs {
+		fmt.Printf("%s -> %s\n", k, v)
+	}
 
-    for k := range kvs {
-        fmt.Println("key:", k)
-    }
+	for k := range kvs {
+		fmt.Println("key:", k)
+	}
 
-    for i, c := range "go" {
-        fmt.Println(i, c)
-    }
+	for i, c := range "go" {
+		fmt.Println(i, c)
+	}
+}
+
+func zeroval(ival int) {
+	ival = 0
+}
+
+func zeroptr(iptr *int) {
+	*iptr = 0
+}
+
+func pointers() {
+	i := 1
+	fmt.Println("initial:", i)
+
+	zeroval(i)
+	fmt.Println("zeroval:", i)
+
+	zeroptr(&i)
+	fmt.Println("zeroptr:", i)
+
+	fmt.Println("pointer:", &i)
 }
 
 func main() {
@@ -344,6 +364,7 @@ func main() {
 		{"closures and lambdas", closures_lambdas},
 		{"recursive functions", recursive_functions},
 		{"using range over builtin types", using_range_over_builtin_types},
+		{"pointers", pointers},
 	}
 
 	for _, f := range functions {
