@@ -5,6 +5,7 @@ import (
 	"maps"
 	"slices"
 	"time"
+	"unicode/utf8"
 )
 
 type T struct {
@@ -351,6 +352,42 @@ func pointers() {
 	fmt.Println("pointer:", &i)
 }
 
+func strings() {
+
+	const s = "สวัสดี"
+
+	fmt.Println("Len:", len(s))
+
+	for i := 0; i < len(s); i++ {
+		fmt.Printf("%x ", s[i])
+	}
+	fmt.Println()
+
+	fmt.Println("Rune count:", utf8.RuneCountInString(s))
+
+	for idx, runeValue := range s {
+		fmt.Printf("%#U starts at %d\n", runeValue, idx)
+	}
+
+	fmt.Println("\nUsing DecodeRuneInString")
+	for i, w := 0, 0; i < len(s); i += w {
+		runeValue, width := utf8.DecodeRuneInString(s[i:])
+		fmt.Printf("%#U starts at %d\n", runeValue, i)
+		w = width
+
+		examineRune(runeValue)
+	}
+}
+
+func examineRune(r rune) {
+
+	if r == 't' {
+		fmt.Println("found tee")
+	} else if r == 'ส' {
+		fmt.Println("found so sua")
+	}
+}
+
 func main() {
 
 	functions := []Function{
@@ -365,6 +402,7 @@ func main() {
 		{"recursive functions", recursive_functions},
 		{"using range over builtin types", using_range_over_builtin_types},
 		{"pointers", pointers},
+		{"strings", strings},
 	}
 
 	for _, f := range functions {
