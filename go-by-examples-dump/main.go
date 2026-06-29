@@ -546,6 +546,42 @@ func transition(s ServerState) ServerState {
 	}
 }
 
+type base struct {
+	num int
+}
+
+func (b base) describe() string {
+	return fmt.Sprintf("base with num=%v", b.num)
+}
+
+type container struct {
+	base
+	str string
+}
+
+func embedded_structs() {
+
+	co := container{
+		base: base{
+			num: 1,
+		},
+		str: "some name",
+	}
+
+	fmt.Printf("co={num: %v, str: %v}\n", co.num, co.str)
+
+	fmt.Println("also num:", co.base.num)
+
+	fmt.Println("describe:", co.describe())
+
+	type describer interface {
+		describe() string
+	}
+
+	var d describer = co
+	fmt.Println("describer:", d.describe())
+}
+
 func main() {
 
 	functions := []Function{
@@ -565,6 +601,7 @@ func main() {
 		{"methods", method_example},
 		{"interfaces", interfaces},
 		{"enums", enums},
+		{"embedded_structs", embedded_structs},
 	}
 
 	for _, f := range functions {
