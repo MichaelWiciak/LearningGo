@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"maps"
+	"math"
 	"slices"
 	"time"
 	"unicode/utf8"
@@ -431,20 +432,20 @@ func structs_example() {
 	fmt.Println(dog)
 }
 
-type rect struct {
+type rect_int struct {
 	width, height int
 }
 
-func (r *rect) area() int {
+func (r *rect_int) area() int {
 	return r.width * r.height
 }
 
-func (r rect) perim() int {
+func (r rect_int) perim() int {
 	return 2*r.width + 2*r.height
 }
 
 func method_example() {
-	r := rect{width: 10, height: 5}
+	r := rect_int{width: 10, height: 5}
 
 	fmt.Println("area: ", r.area())
 	fmt.Println("perim:", r.perim())
@@ -452,6 +453,55 @@ func method_example() {
 	rp := &r
 	fmt.Println("area: ", rp.area())
 	fmt.Println("perim:", rp.perim())
+}
+
+type geometry interface {
+	area() float64
+	perim() float64
+}
+
+type rect struct {
+	width, height float64
+}
+type circle struct {
+	radius float64
+}
+
+func (r rect) area() float64 {
+	return r.width * r.height
+}
+func (r rect) perim() float64 {
+	return 2*r.width + 2*r.height
+}
+
+func (c circle) area() float64 {
+	return math.Pi * c.radius * c.radius
+}
+func (c circle) perim() float64 {
+	return 2 * math.Pi * c.radius
+}
+
+func measure(g geometry) {
+	fmt.Println(g)
+	fmt.Println(g.area())
+	fmt.Println(g.perim())
+}
+
+func detectCircle(g geometry) {
+	if c, ok := g.(circle); ok {
+		fmt.Println("circle with radius", c.radius)
+	}
+}
+
+func interfaces() {
+	r := rect{width: 3, height: 4}
+	c := circle{radius: 5}
+
+	measure(r)
+	measure(c)
+
+	detectCircle(r)
+	detectCircle(c)
 }
 
 func main() {
@@ -471,6 +521,7 @@ func main() {
 		{"strings", strings},
 		{"structs", structs_example},
 		{"methods", method_example},
+		{"interfaces", interfaces},
 	}
 
 	for _, f := range functions {
