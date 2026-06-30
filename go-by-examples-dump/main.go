@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"iter"
 	"maps"
 	"math"
 	"slices"
+	stdstrings "strings"
 	"time"
 	"unicode/utf8"
 )
@@ -632,6 +634,56 @@ func generics() {
 	fmt.Println("list:", lst.AllElements())
 }
 
+func (lst *List[T]) All() iter.Seq[T] {
+	return func(yield func(T) bool) {
+
+		for e := lst.head; e != nil; e = e.next {
+			if !yield(e.val) {
+				return
+			}
+		}
+	}
+}
+
+func genFib() iter.Seq[int] {
+	return func(yield func(int) bool) {
+		a, b := 0, 1
+
+		for {
+			if !yield(a) {
+				return
+			}
+			a, b = b, a+b
+		}
+	}
+}
+
+func range_over_iterator() {
+	lst := List[int]{}
+	lst.Push(10)
+	lst.Push(13)
+	lst.Push(23)
+
+	for e := range lst.All() {
+		fmt.Println(e)
+	}
+
+	all := slices.Collect(lst.All())
+	fmt.Println("all:", all)
+
+	for _, part := range stdstrings.Split("go-by-example", "-") {
+		fmt.Printf("part: %s\n", part)
+	}
+
+	for n := range genFib() {
+
+		if n >= 10 {
+			break
+		}
+		fmt.Println(n)
+	}
+}
+
 func main() {
 
 	functions := []Function{
@@ -653,6 +705,7 @@ func main() {
 		{"enums", enums},
 		{"embedded_structs", embedded_structs},
 		{"generics", generics},
+		{"range_over_iterator", range_over_iterator},
 	}
 
 	for _, f := range functions {
