@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"iter"
 	"maps"
@@ -9,7 +10,6 @@ import (
 	stdstrings "strings"
 	"time"
 	"unicode/utf8"
-	"errors"
 )
 
 type T struct {
@@ -685,54 +685,81 @@ func range_over_iterator() {
 	}
 }
 
+func f1(arg int) (int, error) {
+	if arg == 42 {
 
-func f(arg int) (int, error) {
-    if arg == 42 {
+		return -1, errors.New("can't work with 42")
+	}
 
-        return -1, errors.New("can't work with 42")
-    }
-
-    return arg + 3, nil
+	return arg + 3, nil
 }
 
 var ErrOutOfTea = errors.New("no more tea available")
 var ErrPower = errors.New("can't boil water")
 
 func makeTea(arg int) error {
-    if arg == 2 {
-        return ErrOutOfTea
-    } else if arg == 4 {
+	if arg == 2 {
+		return ErrOutOfTea
+	} else if arg == 4 {
 
-        return fmt.Errorf("making tea: %w", ErrPower)
-    }
-    return nil
+		return fmt.Errorf("making tea: %w", ErrPower)
+	}
+	return nil
 }
 
 func errors_example() {
-    for _, i := range []int{7, 42} {
+	for _, i := range []int{7, 42} {
 
-        if r, e := f(i); e != nil {
-            fmt.Println("f failed:", e)
-        } else {
-            fmt.Println("f worked:", r)
-        }
-    }
+		if r, e := f1(i); e != nil {
+			fmt.Println("f failed:", e)
+		} else {
+			fmt.Println("f worked:", r)
+		}
+	}
 
-    for i := range 5 {
-        if err := makeTea(i); err != nil {
+	for i := range 5 {
+		if err := makeTea(i); err != nil {
 
-            if errors.Is(err, ErrOutOfTea) {
-                fmt.Println("We should buy new tea!")
-            } else if errors.Is(err, ErrPower) {
-                fmt.Println("Now it is dark.")
-            } else {
-                fmt.Printf("unknown error: %s\n", err)
-            }
-            continue
-        }
+			if errors.Is(err, ErrOutOfTea) {
+				fmt.Println("We should buy new tea!")
+			} else if errors.Is(err, ErrPower) {
+				fmt.Println("Now it is dark.")
+			} else {
+				fmt.Printf("unknown error: %s\n", err)
+			}
+			continue
+		}
 
-        fmt.Println("Tea is ready!")
-    }
+		fmt.Println("Tea is ready!")
+	}
+}
+
+type argError struct {
+	arg     int
+	message string
+}
+
+func (e *argError) Error() string {
+	return fmt.Sprintf("%d - %s", e.arg, e.message)
+}
+
+func f2(arg int) (int, error) {
+	if arg == 42 {
+		return -1, &argError{arg, "can't work with it"}
+	}
+
+	return arg + 3, nil
+}
+
+func custom_errors() {
+
+	_, err := f2(42)
+	if ae, ok := errors.AsType[*argError](err); ok {
+		fmt.Println(ae.arg)
+		fmt.Println(ae.message)
+	} else {
+		fmt.Println("err doesn't match argError")
+	}
 }
 
 func main() {
@@ -758,6 +785,7 @@ func main() {
 		{"generics", generics},
 		{"range_over_iterator", range_over_iterator},
 		{"errors", errors_example},
+		{"custom_errors", custom_errors},
 	}
 
 	for _, f := range functions {
