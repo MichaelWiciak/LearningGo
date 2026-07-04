@@ -762,6 +762,26 @@ func custom_errors() {
 	}
 }
 
+func f3(from string) {
+	for i := range 3 {
+		fmt.Println(from, ":", i)
+	}
+}
+
+func goroutines() {
+
+	f3("direct")
+
+	go f3("goroutine")
+
+	go func(msg string) {
+		fmt.Println(msg)
+	}("going")
+
+	time.Sleep(time.Second)
+	fmt.Println("done")
+}
+
 func main() {
 
 	functions := []Function{
@@ -786,6 +806,7 @@ func main() {
 		{"range_over_iterator", range_over_iterator},
 		{"errors", errors_example},
 		{"custom_errors", custom_errors},
+		{"goroutines", goroutines},
 	}
 
 	for _, f := range functions {
