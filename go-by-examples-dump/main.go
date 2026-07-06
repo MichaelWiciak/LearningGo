@@ -782,6 +782,16 @@ func goroutines() {
 	fmt.Println("done")
 }
 
+func channels() {
+
+	messages := make(chan string)
+
+	go func() { messages <- "ping" }()
+
+	msg := <-messages
+	fmt.Println(msg)
+}
+
 func main() {
 
 	functions := []Function{
@@ -807,6 +817,7 @@ func main() {
 		{"errors", errors_example},
 		{"custom_errors", custom_errors},
 		{"goroutines", goroutines},
+		{"channels", channels},
 	}
 
 	for _, f := range functions {
