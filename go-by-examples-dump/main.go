@@ -792,6 +792,17 @@ func channels() {
 	fmt.Println(msg)
 }
 
+func buffered_channels() {
+
+	messages := make(chan string, 2)
+
+	messages <- "buffered"
+	messages <- "channel"
+
+	fmt.Println(<-messages)
+	fmt.Println(<-messages)
+}
+
 func main() {
 
 	functions := []Function{
@@ -818,6 +829,7 @@ func main() {
 		{"custom_errors", custom_errors},
 		{"goroutines", goroutines},
 		{"channels", channels},
+		{"buffered_channels", buffered_channels},
 	}
 
 	for _, f := range functions {
