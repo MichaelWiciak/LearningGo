@@ -803,6 +803,22 @@ func buffered_channels() {
 	fmt.Println(<-messages)
 }
 
+func worker(done chan bool) {
+	fmt.Print("working...")
+	time.Sleep(time.Second)
+	fmt.Println("done")
+
+	done <- true
+}
+
+func channel_synchronisation() {
+
+	done := make(chan bool, 1)
+	go worker(done)
+
+	<-done
+}
+
 func main() {
 
 	functions := []Function{
@@ -829,7 +845,8 @@ func main() {
 		{"custom_errors", custom_errors},
 		{"goroutines", goroutines},
 		{"channels", channels},
-		{"buffered_channels", buffered_channels},
+		{"buffered channels", buffered_channels},
+		{"channel synchronisation", channel_synchronisation},
 	}
 
 	for _, f := range functions {
