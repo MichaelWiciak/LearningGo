@@ -819,6 +819,23 @@ func channel_synchronisation() {
 	<-done
 }
 
+func ping(pings chan<- string, msg string) {
+	pings <- msg
+}
+
+func pong(pings <-chan string, pongs chan<- string) {
+	msg := <-pings
+	pongs <- msg
+}
+
+func channel_directions() {
+	pings := make(chan string, 1)
+	pongs := make(chan string, 1)
+	ping(pings, "passed message")
+	pong(pings, pongs)
+	fmt.Println(<-pongs)
+}
+
 func main() {
 
 	functions := []Function{
@@ -847,6 +864,7 @@ func main() {
 		{"channels", channels},
 		{"buffered channels", buffered_channels},
 		{"channel synchronisation", channel_synchronisation},
+		{"channel_directions", channel_directions},
 	}
 
 	for _, f := range functions {
