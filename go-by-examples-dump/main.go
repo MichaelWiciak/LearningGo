@@ -898,7 +898,7 @@ func main() {
 		{"slices", slices_example},
 		{"maps", maps_examples},
 		{"variadic function", variadic_function_caller},
-		{"closures and lambdas", closures_lambdas},
+		{"closurer and lambdas", closures_lambdas},
 		{"recursive functions", recursive_functions},
 		{"using range over builtin types", using_range_over_builtin_types},
 		{"pointers", pointers},
