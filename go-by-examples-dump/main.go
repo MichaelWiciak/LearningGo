@@ -884,8 +884,37 @@ func timeouts() {
 	case res := <-c2:
 		fmt.Println(res)
 	case <-time.After(3 * time.Second):
-		fmt.Println("timeout 2")
+		fmt.Println("timeout 3")
 	}
+}
+
+func non_blocking_channel_operations() {
+    messages := make(chan string)
+    signals := make(chan bool)
+
+    select {
+    case msg := <-messages:
+        fmt.Println("received message", msg)
+    default:
+        fmt.Println("no message received")
+    }
+
+    msg := "hi"
+    select {
+    case messages <- msg:
+        fmt.Println("sent message", msg)
+    default:
+        fmt.Println("no message sent")
+    }
+
+    select {
+    case msg := <-messages:
+        fmt.Println("received message", msg)
+    case sig := <-signals:
+        fmt.Println("received signal", sig)
+    default:
+        fmt.Println("no activity")
+    }
 }
 
 func main() {
@@ -919,6 +948,7 @@ func main() {
 		{"channel_directions", channel_directions},
 		{"select", select_statement},
 		{"timeouts", timeouts},
+		{"non blocking channel operations", non_blocking_channel_operations},
 	}
 
 	for _, f := range functions {
