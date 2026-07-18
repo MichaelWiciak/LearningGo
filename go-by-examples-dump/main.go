@@ -889,32 +889,62 @@ func timeouts() {
 }
 
 func non_blocking_channel_operations() {
-    messages := make(chan string)
-    signals := make(chan bool)
+	messages := make(chan string)
+	signals := make(chan bool)
 
-    select {
-    case msg := <-messages:
-        fmt.Println("received message", msg)
-    default:
-        fmt.Println("no message received")
-    }
+	select {
+	case msg := <-messages:
+		fmt.Println("received message", msg)
+	default:
+		fmt.Println("no message received")
+	}
 
-    msg := "hi"
-    select {
-    case messages <- msg:
-        fmt.Println("sent message", msg)
-    default:
-        fmt.Println("no message sent")
-    }
+	msg := "hi"
+	select {
+	case messages <- msg:
+		fmt.Println("sent message", msg)
+	default:
+		fmt.Println("no message sent")
+	}
 
-    select {
-    case msg := <-messages:
-        fmt.Println("received message", msg)
-    case sig := <-signals:
-        fmt.Println("received signal", sig)
-    default:
-        fmt.Println("no activity")
-    }
+	select {
+	case msg := <-messages:
+		fmt.Println("received message", msg)
+	case sig := <-signals:
+		fmt.Println("received signal", sig)
+	default:
+		fmt.Println("no activity")
+	}
+}
+
+func closing_chanels() {
+	jobs := make(chan int, 5)
+	done := make(chan bool)
+
+	go func() {
+		for {
+			j, more := <-jobs
+			if more {
+				fmt.Println("received job", j)
+			} else {
+				fmt.Println("received all jobs")
+				done <- true
+				return
+			}
+		}
+	}()
+
+	for j := 1; j <= 3; j++ {
+		jobs <- j
+		fmt.Println("sent job", j)
+	}
+	close(jobs)
+	fmt.Println("sent all jobs")
+
+	<-done
+
+	_, ok := <-jobs
+	fmt.Println("received more jobs:", ok)
 }
 
 func main() {
@@ -949,6 +979,7 @@ func main() {
 		{"select", select_statement},
 		{"timeouts", timeouts},
 		{"non blocking channel operations", non_blocking_channel_operations},
+		{"closing channels", closing_chanels},
 	}
 
 	for _, f := range functions {
