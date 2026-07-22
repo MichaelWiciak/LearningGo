@@ -947,6 +947,18 @@ func closing_chanels() {
 	fmt.Println("received more jobs:", ok)
 }
 
+func range_over_channels() {
+
+	queue := make(chan string, 2)
+	queue <- "one"
+	queue <- "two"
+	close(queue)
+
+	for elem := range queue {
+		fmt.Println(elem)
+	}
+}
+
 func main() {
 
 	functions := []Function{
@@ -980,6 +992,7 @@ func main() {
 		{"timeouts", timeouts},
 		{"non blocking channel operations", non_blocking_channel_operations},
 		{"closing channels", closing_chanels},
+		{"range over channels", range_over_channels},
 	}
 
 	for _, f := range functions {
