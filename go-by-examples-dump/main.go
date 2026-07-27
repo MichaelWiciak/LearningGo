@@ -959,6 +959,26 @@ func range_over_channels() {
 	}
 }
 
+func timers() {
+
+	timer1 := time.NewTimer(2 * time.Second)
+
+	<-timer1.C
+	fmt.Println("Timer 1 fired")
+
+	timer2 := time.NewTimer(time.Second)
+	go func() {
+		<-timer2.C
+		fmt.Println("Timer 2 fired")
+	}()
+	stop2 := timer2.Stop()
+	if stop2 {
+		fmt.Println("Timer 2 stopped")
+	}
+
+	time.Sleep(2 * time.Second)
+}
+
 func main() {
 
 	functions := []Function{
@@ -993,6 +1013,7 @@ func main() {
 		{"non blocking channel operations", non_blocking_channel_operations},
 		{"closing channels", closing_chanels},
 		{"range over channels", range_over_channels},
+		{"timers", timers},
 	}
 
 	for _, f := range functions {
