@@ -8,6 +8,8 @@ import (
 	"maps"
 	"math"
 	"math/rand"
+	"os"
+	"path/filepath"
 	"slices"
 	stdstrings "strings"
 	"sync"
@@ -1265,6 +1267,17 @@ func sorting_by_functions() {
 	fmt.Println(people)
 }
 
+func panic_example() {
+
+	// panic("a problem")
+
+	path := filepath.Join(os.TempDir(), "file")
+	_, err := os.Create(path)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func main() {
 
 	functions := []Function{
@@ -1309,6 +1322,7 @@ func main() {
 		{"stateful goroutines", stateful_goroutines},
 		{"sorting", sorting},
 		{"sorting by functions", sorting_by_functions},
+		{"panic", panic_example},
 	}
 
 	for _, f := range functions {
