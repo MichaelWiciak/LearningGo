@@ -1269,7 +1269,7 @@ func sorting_by_functions() {
 
 func panic_example() {
 
-	// panic("a problem")
+	panic("a problem")
 
 	path := filepath.Join(os.TempDir(), "file")
 	_, err := os.Create(path)
