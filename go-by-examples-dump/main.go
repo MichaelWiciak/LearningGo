@@ -6,6 +6,7 @@ import (
 	"iter"
 	"maps"
 	"math"
+	"math/rand"
 	"slices"
 	stdstrings "strings"
 	"sync"
@@ -1111,6 +1112,116 @@ func atomic_counters() {
 	fmt.Println("ops:", ops.Load())
 }
 
+type Container struct {
+	mu       sync.Mutex
+	counters map[string]int
+}
+
+func (c *Container) inc(name string) {
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.counters[name]++
+}
+
+func mutex_example() {
+	c := Container{
+
+		counters: map[string]int{"a": 0, "b": 0},
+	}
+
+	var wg sync.WaitGroup
+
+	doIncrement := func(name string, n int) {
+		for range n {
+			c.inc(name)
+		}
+	}
+
+	wg.Go(func() {
+		doIncrement("a", 10000)
+	})
+
+	wg.Go(func() {
+		doIncrement("a", 10000)
+	})
+
+	wg.Go(func() {
+		doIncrement("b", 10000)
+	})
+
+	wg.Wait()
+	fmt.Println(c.counters)
+}
+
+type readOp struct {
+	key  int
+	resp chan int
+}
+type writeOp struct {
+	key  int
+	val  int
+	resp chan bool
+}
+
+func stateful_goroutines() {
+
+	var readOps uint64
+	var writeOps uint64
+
+	reads := make(chan readOp)
+	writes := make(chan writeOp)
+
+	go func() {
+		var state = make(map[int]int)
+		for {
+			select {
+			case read := <-reads:
+				read.resp <- state[read.key]
+			case write := <-writes:
+				state[write.key] = write.val
+				write.resp <- true
+			}
+		}
+	}()
+
+	for range 100 {
+		go func() {
+			for {
+				read := readOp{
+					key:  rand.Intn(5),
+					resp: make(chan int)}
+				reads <- read
+				<-read.resp
+				atomic.AddUint64(&readOps, 1)
+				time.Sleep(time.Millisecond)
+			}
+		}()
+	}
+
+	for range 10 {
+		go func() {
+			for {
+				write := writeOp{
+					key:  rand.Intn(5),
+					val:  rand.Intn(100),
+					resp: make(chan bool)}
+				writes <- write
+				<-write.resp
+				atomic.AddUint64(&writeOps, 1)
+				time.Sleep(time.Millisecond)
+			}
+		}()
+	}
+
+	time.Sleep(time.Second)
+
+	readOpsFinal := atomic.LoadUint64(&readOps)
+	fmt.Println("readOps:", readOpsFinal)
+	writeOpsFinal := atomic.LoadUint64(&writeOps)
+	fmt.Println("writeOps:", writeOpsFinal)
+}
+
 func main() {
 
 	functions := []Function{
@@ -1151,6 +1262,8 @@ func main() {
 		{"wait groups", waitGroups},
 		{"rate limiting", rate_limiting},
 		{"atomic counters", atomic_counters},
+		{"mutex", mutex_example},
+		{"stateful goroutines", stateful_goroutines},
 	}
 
 	for _, f := range functions {
