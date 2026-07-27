@@ -9,6 +9,7 @@ import (
 	"slices"
 	stdstrings "strings"
 	"sync"
+	"sync/atomic"
 	"time"
 	"unicode/utf8"
 )
@@ -1090,6 +1091,26 @@ func rate_limiting() {
 	}
 }
 
+func atomic_counters() {
+
+	var ops atomic.Uint64
+
+	var wg sync.WaitGroup
+
+	for range 50 {
+		wg.Go(func() {
+			for range 1000 {
+
+				ops.Add(1)
+			}
+		})
+	}
+
+	wg.Wait()
+
+	fmt.Println("ops:", ops.Load())
+}
+
 func main() {
 
 	functions := []Function{
@@ -1113,12 +1134,12 @@ func main() {
 		{"generics", generics},
 		{"range_over_iterator", range_over_iterator},
 		{"errors", errors_example},
-		{"custom_errors", custom_errors},
+		{"custom errors", custom_errors},
 		{"goroutines", goroutines},
 		{"channels", channels},
 		{"buffered channels", buffered_channels},
 		{"channel synchronisation", channel_synchronisation},
-		{"channel_directions", channel_directions},
+		{"channel directions", channel_directions},
 		{"select", select_statement},
 		{"timeouts", timeouts},
 		{"non blocking channel operations", non_blocking_channel_operations},
@@ -1129,6 +1150,7 @@ func main() {
 		{"worker pools", worker_pools},
 		{"wait groups", waitGroups},
 		{"rate limiting", rate_limiting},
+		{"atomic counters", atomic_counters},
 	}
 
 	for _, f := range functions {
