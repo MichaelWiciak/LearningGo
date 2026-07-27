@@ -8,6 +8,7 @@ import (
 	"math"
 	"slices"
 	stdstrings "strings"
+	"sync"
 	"time"
 	"unicode/utf8"
 )
@@ -1030,6 +1031,27 @@ func worker_pools() {
 	}
 }
 
+func worker_from_waitgroups(id int) {
+	fmt.Printf("Worker %d starting\n", id)
+
+	time.Sleep(time.Second)
+	fmt.Printf("Worker %d done\n", id)
+}
+
+func waitGroups() {
+
+	var wg sync.WaitGroup
+
+	for i := 1; i <= 5; i++ {
+		wg.Go(func() {
+			worker_from_waitgroups(i)
+		})
+	}
+
+	wg.Wait()
+
+}
+
 func main() {
 
 	functions := []Function{
@@ -1067,6 +1089,7 @@ func main() {
 		{"timers", timers},
 		{"tickets", tickers},
 		{"worker pools", worker_pools},
+		{"wait groups", waitGroups},
 	}
 
 	for _, f := range functions {
