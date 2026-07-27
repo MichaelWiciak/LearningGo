@@ -979,6 +979,28 @@ func timers() {
 	time.Sleep(2 * time.Second)
 }
 
+func tickers() {
+
+	ticker := time.NewTicker(500 * time.Millisecond)
+	done := make(chan bool)
+
+	go func() {
+		for {
+			select {
+			case <-done:
+				return
+			case t := <-ticker.C:
+				fmt.Println("Tick at", t)
+			}
+		}
+	}()
+
+	time.Sleep(1600 * time.Millisecond)
+	ticker.Stop()
+	done <- true
+	fmt.Println("Ticker stopped")
+}
+
 func main() {
 
 	functions := []Function{
@@ -1014,6 +1036,7 @@ func main() {
 		{"closing channels", closing_chanels},
 		{"range over channels", range_over_channels},
 		{"timers", timers},
+		{"tickets", tickers},
 	}
 
 	for _, f := range functions {
