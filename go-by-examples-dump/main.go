@@ -1222,6 +1222,20 @@ func stateful_goroutines() {
 	fmt.Println("writeOps:", writeOpsFinal)
 }
 
+func sorting() {
+
+	strs := []string{"c", "a", "b"}
+	slices.Sort(strs)
+	fmt.Println("Strings:", strs)
+
+	ints := []int{7, 2, 4}
+	slices.Sort(ints)
+	fmt.Println("Ints:   ", ints)
+
+	s := slices.IsSorted(ints)
+	fmt.Println("Sorted: ", s)
+}
+
 func main() {
 
 	functions := []Function{
@@ -1264,6 +1278,7 @@ func main() {
 		{"atomic counters", atomic_counters},
 		{"mutex", mutex_example},
 		{"stateful goroutines", stateful_goroutines},
+		{"sorting", sorting},
 	}
 
 	for _, f := range functions {
