@@ -1269,10 +1269,41 @@ func sorting_by_functions() {
 
 func panic_example() {
 
-	panic("a problem")
+	//panic("a problem")
 
 	path := filepath.Join(os.TempDir(), "file")
 	_, err := os.Create(path)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func defer_example() {
+
+	path := filepath.Join(os.TempDir(), "defer.txt")
+	f := createFile(path)
+	defer closeFile(f)
+	writeFile(f)
+}
+
+func createFile(p string) *os.File {
+	fmt.Println("creating")
+	f, err := os.Create(p)
+	if err != nil {
+		panic(err)
+	}
+	return f
+}
+
+func writeFile(f *os.File) {
+	fmt.Println("writing")
+	fmt.Fprintln(f, "data")
+}
+
+func closeFile(f *os.File) {
+	fmt.Println("closing")
+	err := f.Close()
+
 	if err != nil {
 		panic(err)
 	}
@@ -1323,6 +1354,7 @@ func main() {
 		{"sorting", sorting},
 		{"sorting by functions", sorting_by_functions},
 		{"panic", panic_example},
+		{"defer example", defer_example},
 	}
 
 	for _, f := range functions {
