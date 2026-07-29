@@ -1327,6 +1327,24 @@ func recover_example() {
 	fmt.Println("After mayPanic()")
 }
 
+var p = fmt.Println
+
+func string_example() {
+
+	p("Contains:  ", stdstrings.Contains("test", "es"))
+	p("Count:     ", stdstrings.Count("test", "t"))
+	p("HasPrefix: ", stdstrings.HasPrefix("test", "te"))
+	p("HasSuffix: ", stdstrings.HasSuffix("test", "st"))
+	p("Index:     ", stdstrings.Index("test", "e"))
+	p("Join:      ", stdstrings.Join([]string{"a", "b"}, "-"))
+	p("Repeat:    ", stdstrings.Repeat("a", 5))
+	p("Replace:   ", stdstrings.Replace("foo", "o", "0", -1))
+	p("Replace:   ", stdstrings.Replace("foo", "o", "0", 1))
+	p("Split:     ", stdstrings.Split("a-b-c-d-e", "-"))
+	p("ToLower:   ", stdstrings.ToLower("TEST"))
+	p("ToUpper:   ", stdstrings.ToUpper("test"))
+}
+
 func main() {
 
 	functions := []Function{
@@ -1374,6 +1392,7 @@ func main() {
 		{"panic", panic_example},
 		{"defer example", defer_example},
 		{"recover example", recover_example},
+		{"strings", string_example},
 	}
 
 	for _, f := range functions {
