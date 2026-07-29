@@ -1309,6 +1309,24 @@ func closeFile(f *os.File) {
 	}
 }
 
+func mayPanic() {
+	panic("a problem")
+}
+
+func recover_example() {
+
+	defer func() {
+		if r := recover(); r != nil {
+
+			fmt.Println("Recovered. Error:\n", r)
+		}
+	}()
+
+	mayPanic()
+
+	fmt.Println("After mayPanic()")
+}
+
 func main() {
 
 	functions := []Function{
@@ -1355,6 +1373,7 @@ func main() {
 		{"sorting by functions", sorting_by_functions},
 		{"panic", panic_example},
 		{"defer example", defer_example},
+		{"recover example", recover_example},
 	}
 
 	for _, f := range functions {
