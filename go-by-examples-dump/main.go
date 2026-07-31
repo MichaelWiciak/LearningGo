@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"cmp"
 	"errors"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"regexp"
 	"slices"
 	stdstrings "strings"
 	"sync"
@@ -1449,6 +1451,42 @@ func text_templates() {
 		})
 }
 
+func regular_expessions() {
+
+	match, _ := regexp.MatchString("p([a-z]+)ch", "peach")
+	fmt.Println(match)
+
+	r, _ := regexp.Compile("p([a-z]+)ch")
+
+	fmt.Println(r.MatchString("peach"))
+
+	fmt.Println(r.FindString("peach punch"))
+
+	fmt.Println("idx:", r.FindStringIndex("peach punch"))
+
+	fmt.Println(r.FindStringSubmatch("peach punch"))
+
+	fmt.Println(r.FindStringSubmatchIndex("peach punch"))
+
+	fmt.Println(r.FindAllString("peach punch pinch", -1))
+
+	fmt.Println("all:", r.FindAllStringSubmatchIndex(
+		"peach punch pinch", -1))
+
+	fmt.Println(r.FindAllString("peach punch pinch", 2))
+
+	fmt.Println(r.Match([]byte("peach")))
+
+	r = regexp.MustCompile("p([a-z]+)ch")
+	fmt.Println("regexp:", r)
+
+	fmt.Println(r.ReplaceAllString("a peach", "<fruit>"))
+
+	in := []byte("a peach")
+	out := r.ReplaceAllFunc(in, bytes.ToUpper)
+	fmt.Println(string(out))
+}
+
 func main() {
 
 	functions := []Function{
@@ -1499,6 +1537,7 @@ func main() {
 		{"strings", string_example},
 		{"string formatting", string_formatting},
 		{"text templates", text_templates},
+		{"regular expressions", regular_expessions},
 	}
 
 	for _, f := range functions {
