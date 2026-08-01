@@ -15,6 +15,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"slices"
+	"strconv"
 	stdstrings "strings"
 	"sync"
 	"sync/atomic"
@@ -1706,6 +1707,27 @@ func random_numbers() {
 	fmt.Println()
 }
 
+func number_parsing() {
+
+	f, _ := strconv.ParseFloat("1.234", 64)
+	fmt.Println(f)
+
+	i, _ := strconv.ParseInt("123", 0, 64)
+	fmt.Println(i)
+
+	d, _ := strconv.ParseInt("0x1c8", 0, 64)
+	fmt.Println(d)
+
+	u, _ := strconv.ParseUint("789", 0, 64)
+	fmt.Println(u)
+
+	k, _ := strconv.Atoi("135")
+	fmt.Println(k)
+
+	_, e := strconv.Atoi("wat")
+	fmt.Println(e)
+}
+
 func main() {
 
 	functions := []Function{
@@ -1763,6 +1785,7 @@ func main() {
 		{"Unix epoch", epoch_example},
 		{"time formatting", time_formatting},
 		{"random numbers", random_numbers},
+		{"number parsing", number_parsing},
 	}
 
 	for _, f := range functions {
