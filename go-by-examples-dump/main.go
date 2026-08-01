@@ -1644,6 +1644,19 @@ func time_example() {
 	p(then.Add(-diff))
 }
 
+func epoch_example() {
+
+	now := time.Now()
+	fmt.Println(now)
+
+	fmt.Println(now.Unix())
+	fmt.Println(now.UnixMilli())
+	fmt.Println(now.UnixNano())
+
+	fmt.Println(time.Unix(now.Unix(), 0))
+	fmt.Println(time.Unix(0, now.UnixNano()))
+}
+
 func main() {
 
 	functions := []Function{
@@ -1698,6 +1711,7 @@ func main() {
 		{"json", json_example},
 		{"xml", xml_example},
 		{"time", time_example},
+		{"epoch", epoch_example},
 	}
 
 	for _, f := range functions {
