@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"cmp"
+	"crypto/sha256"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
@@ -1760,6 +1761,19 @@ func url_example() {
 	fmt.Println(m["k"][0])
 }
 
+func sha256_hashes_example() {
+	s := "sha256 this string"
+
+	h := sha256.New()
+
+	h.Write([]byte(s))
+
+	bs := h.Sum(nil)
+
+	fmt.Println(s)
+	fmt.Printf("%x\n", bs)
+}
+
 func main() {
 
 	functions := []Function{
@@ -1819,6 +1833,7 @@ func main() {
 		{"random numbers", random_numbers},
 		{"number parsing", number_parsing},
 		{"url", url_example},
+		{"SHA256 Hashes", sha256_hashes_example},
 	}
 
 	for _, f := range functions {
