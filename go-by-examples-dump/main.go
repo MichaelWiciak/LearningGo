@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"cmp"
 	"crypto/sha256"
@@ -9,6 +10,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"io"
 	"iter"
 	"maps"
 	"math"
@@ -1792,6 +1794,59 @@ func base64_encoding_example() {
 	fmt.Println(string(uDec))
 }
 
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
+func reading_files() {
+
+	path := filepath.Join(os.TempDir(), "dat")
+	dat, err := os.ReadFile(path)
+	check(err)
+	fmt.Print(string(dat))
+
+	f, err := os.Open(path)
+	check(err)
+
+	b1 := make([]byte, 5)
+	n1, err := f.Read(b1)
+	check(err)
+	fmt.Printf("%d bytes: %s\n", n1, string(b1[:n1]))
+
+	o2, err := f.Seek(6, io.SeekStart)
+	check(err)
+	b2 := make([]byte, 2)
+	n2, err := f.Read(b2)
+	check(err)
+	fmt.Printf("%d bytes @ %d: ", n2, o2)
+	fmt.Printf("%v\n", string(b2[:n2]))
+
+	_, err = f.Seek(2, io.SeekCurrent)
+	check(err)
+
+	_, err = f.Seek(-4, io.SeekEnd)
+	check(err)
+
+	o3, err := f.Seek(6, io.SeekStart)
+	check(err)
+	b3 := make([]byte, 2)
+	n3, err := io.ReadAtLeast(f, b3, 2)
+	check(err)
+	fmt.Printf("%d bytes @ %d: %s\n", n3, o3, string(b3))
+
+	_, err = f.Seek(0, io.SeekStart)
+	check(err)
+
+	r4 := bufio.NewReader(f)
+	b4, err := r4.Peek(5)
+	check(err)
+	fmt.Printf("5 bytes: %s\n", string(b4))
+
+	f.Close()
+}
+
 func main() {
 
 	functions := []Function{
@@ -1853,6 +1908,7 @@ func main() {
 		{"url", url_example},
 		{"SHA256 Hashes", sha256_hashes_example},
 		{"Base64 encoding", base64_encoding_example},
+		{"Reading Files", reading_files},
 	}
 
 	for _, f := range functions {
