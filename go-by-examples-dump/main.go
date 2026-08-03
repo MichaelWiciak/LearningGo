@@ -1880,6 +1880,23 @@ func writing_example() {
 
 }
 
+func line_filters() {
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for scanner.Scan() {
+
+		ucl := stdstrings.ToUpper(scanner.Text())
+
+		fmt.Println(ucl)
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "error:", err)
+		os.Exit(1)
+	}
+}
+
 func main() {
 
 	functions := []Function{
@@ -1943,6 +1960,7 @@ func main() {
 		{"Base64 encoding", base64_encoding_example},
 		{"Reading Files", reading_files},
 		{"Writing Files", writing_example},
+		{"Line Filters", line_filters},
 	}
 
 	for _, f := range functions {
