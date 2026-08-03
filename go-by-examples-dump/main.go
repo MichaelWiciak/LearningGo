@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"iter"
 	"maps"
 	"math"
@@ -1931,6 +1932,62 @@ func filepaths() {
 	fmt.Println(rel)
 }
 
+func directories() {
+
+	err := os.Mkdir("subdir", 0755)
+	check(err)
+
+	defer os.RemoveAll("subdir")
+
+	createEmptyFile := func(name string) {
+		d := []byte("")
+		check(os.WriteFile(name, d, 0644))
+	}
+
+	createEmptyFile("subdir/file1")
+
+	err = os.MkdirAll("subdir/parent/child", 0755)
+	check(err)
+
+	createEmptyFile("subdir/parent/file2")
+	createEmptyFile("subdir/parent/file3")
+	createEmptyFile("subdir/parent/child/file4")
+
+	c, err := os.ReadDir("subdir/parent")
+	check(err)
+
+	fmt.Println("Listing subdir/parent")
+	for _, entry := range c {
+		fmt.Println(" ", entry.Name(), entry.IsDir())
+	}
+
+	err = os.Chdir("subdir/parent/child")
+	check(err)
+
+	c, err = os.ReadDir(".")
+	check(err)
+
+	fmt.Println("Listing subdir/parent/child")
+	for _, entry := range c {
+		fmt.Println(" ", entry.Name(), entry.IsDir())
+	}
+
+	err = os.Chdir("../../..")
+	check(err)
+
+	fmt.Println("Visiting subdir")
+	err = filepath.WalkDir("subdir", visit)
+	check(err)
+}
+
+func visit(path string, d fs.DirEntry, err error) error {
+	if err != nil {
+		return err
+	}
+	fmt.Println(" ", path, d.IsDir())
+	return nil
+}
+
 func main() {
 
 	functions := []Function{
@@ -1996,6 +2053,7 @@ func main() {
 		{"Writing Files", writing_example},
 		{"Line Filters", line_filters},
 		{"File paths", filepaths},
+		{"Directories", directories},
 	}
 
 	for _, f := range functions {
