@@ -1896,7 +1896,7 @@ func line_filters() {
 
 	tempFile.Seek(0, 0)
 
-	scanner := bufio.NewScanner(os.Stdin)
+	scanner := bufio.NewScanner(tempFile)
 
 	for scanner.Scan() {
 
