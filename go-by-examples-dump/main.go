@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"io/fs"
@@ -2058,6 +2059,26 @@ func command_line_arguments() {
 	fmt.Println(argsWithoutProg)
 	fmt.Println(arg)
 }
+
+func command_line_flags() {
+
+	wordPtr := flag.String("word", "foo", "a string")
+
+	numbPtr := flag.Int("numb", 42, "an int")
+	forkPtr := flag.Bool("fork", false, "a bool")
+
+	var svar string
+	flag.StringVar(&svar, "svar", "bar", "a string var")
+
+	flag.Parse()
+
+	fmt.Println("word:", *wordPtr)
+	fmt.Println("numb:", *numbPtr)
+	fmt.Println("fork:", *forkPtr)
+	fmt.Println("svar:", svar)
+	fmt.Println("tail:", flag.Args())
+}
+
 func main() {
 
 	functions := []Function{
@@ -2127,6 +2148,7 @@ func main() {
 		{"Temporary Files and Directories", temp_files_and_directories},
 		{"Embed Directives", embed_directive},
 		{"Command Line Arguments", command_line_arguments},
+		{"Command Line Flags", command_line_flags},
 	}
 
 	for _, f := range functions {
