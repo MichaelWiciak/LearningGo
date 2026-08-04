@@ -2047,6 +2047,17 @@ func embed_directive() {
 	print(string(content2))
 }
 
+func command_line_arguments() {
+
+	argsWithProg := os.Args
+	argsWithoutProg := os.Args[1:]
+
+	arg := os.Args[3]
+
+	fmt.Println(argsWithProg)
+	fmt.Println(argsWithoutProg)
+	fmt.Println(arg)
+}
 func main() {
 
 	functions := []Function{
@@ -2115,6 +2126,7 @@ func main() {
 		{"Directories", directories},
 		{"Temporary Files and Directories", temp_files_and_directories},
 		{"Embed Directives", embed_directive},
+		{"Command Line Arguments", command_line_arguments},
 	}
 
 	for _, f := range functions {

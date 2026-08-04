@@ -1,6 +1,7 @@
-Eitehr 
+Either
 ```bash
-go run main.go
+go build main.go
+./main a b c d
 ```
 or 
 ```bash
