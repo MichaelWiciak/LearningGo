@@ -21,6 +21,7 @@ import (
 	"math"
 	"math/rand/v2"
 	"net"
+	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -2157,6 +2158,26 @@ func logging() {
 	myslog.Info("hello again", "key", "val", "age", 25)
 }
 
+func http_client() {
+
+	resp, err := http.Get("https://michaelwiciak.com")
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	fmt.Println("Response status:", resp.Status)
+
+	scanner := bufio.NewScanner(resp.Body)
+	for i := 0; scanner.Scan() && i < 5; i++ {
+		fmt.Println(scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		panic(err)
+	}
+}
+
 func main() {
 
 	functions := []Function{
@@ -2230,6 +2251,7 @@ func main() {
 		{"Command Line Sub Arguments", command_line_sub_arguments},
 		{"Environment variables", environment_variables},
 		{"Logging", logging},
+		{"HTTP Client", http_client},
 	}
 
 	for _, f := range functions {
