@@ -1883,6 +1883,19 @@ func writing_example() {
 
 func line_filters() {
 
+	// Create temp files for the scanner
+	tempFile, err := os.CreateTemp("", "scanner_example_*.txt")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error creating temp file: %v\n", err)
+		return
+	}
+	defer os.Remove(tempFile.Name())
+	defer tempFile.Close()
+
+	tempFile.WriteString("hello world\ngolang scanner\ntemp file test")
+
+	tempFile.Seek(0, 0)
+
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for scanner.Scan() {
