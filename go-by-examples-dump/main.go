@@ -1988,6 +1988,29 @@ func visit(path string, d fs.DirEntry, err error) error {
 	return nil
 }
 
+func temp_files_and_directories() {
+
+	f, err := os.CreateTemp("", "sample")
+	check(err)
+
+	fmt.Println("Temp file name:", f.Name())
+
+	defer os.Remove(f.Name())
+
+	_, err = f.Write([]byte{1, 2, 3, 4})
+	check(err)
+
+	dname, err := os.MkdirTemp("", "sampledir")
+	check(err)
+	fmt.Println("Temp dir name:", dname)
+
+	defer os.RemoveAll(dname)
+
+	fname := filepath.Join(dname, "file1")
+	err = os.WriteFile(fname, []byte{1, 2}, 0666)
+	check(err)
+}
+
 func main() {
 
 	functions := []Function{
@@ -2054,6 +2077,7 @@ func main() {
 		{"Line Filters", line_filters},
 		{"File paths", filepaths},
 		{"Directories", directories},
+		{"Temporary Files and Directories", temp_files_and_directories},
 	}
 
 	for _, f := range functions {
