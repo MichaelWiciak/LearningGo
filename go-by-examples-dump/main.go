@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"cmp"
 	"crypto/sha256"
+	"embed"
 	b64 "encoding/base64"
 	"encoding/json"
 	"encoding/xml"
@@ -2024,6 +2025,28 @@ func temp_files_and_directories() {
 	check(err)
 }
 
+//go:embed folder/single_file.txt
+var fileString string
+
+//go:embed folder/single_file.txt
+var fileByte []byte
+
+//go:embed folder/single_file.txt
+//go:embed folder/*.hash
+var folder embed.FS
+
+func embed_directive() {
+
+	print(fileString)
+	print(string(fileByte))
+
+	content1, _ := folder.ReadFile("folder/file1.hash")
+	print(string(content1))
+
+	content2, _ := folder.ReadFile("folder/file2.hash")
+	print(string(content2))
+}
+
 func main() {
 
 	functions := []Function{
@@ -2091,6 +2114,7 @@ func main() {
 		{"File paths", filepaths},
 		{"Directories", directories},
 		{"Temporary Files and Directories", temp_files_and_directories},
+		{"Embed Directives", embed_directive},
 	}
 
 	for _, f := range functions {
