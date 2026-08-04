@@ -15,6 +15,8 @@ import (
 	"io"
 	"io/fs"
 	"iter"
+	"log"
+	"log/slog"
 	"maps"
 	"math"
 	"math/rand/v2"
@@ -2125,6 +2127,36 @@ func environment_variables() {
 	}
 }
 
+func logging() {
+
+	log.Println("standard logger")
+
+	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
+	log.Println("with micro")
+
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.Println("with file/line")
+
+	mylog := log.New(os.Stdout, "my:", log.LstdFlags)
+	mylog.Println("from mylog")
+
+	mylog.SetPrefix("ohmy:")
+	mylog.Println("from mylog")
+
+	var buf bytes.Buffer
+	buflog := log.New(&buf, "buf:", log.LstdFlags)
+
+	buflog.Println("hello")
+
+	fmt.Print("from buflog:", buf.String())
+
+	jsonHandler := slog.NewJSONHandler(os.Stderr, nil)
+	myslog := slog.New(jsonHandler)
+	myslog.Info("hi there")
+
+	myslog.Info("hello again", "key", "val", "age", 25)
+}
+
 func main() {
 
 	functions := []Function{
@@ -2197,6 +2229,7 @@ func main() {
 		{"Command Line Flags", command_line_flags},
 		{"Command Line Sub Arguments", command_line_sub_arguments},
 		{"Environment variables", environment_variables},
+		{"Logging", logging},
 	}
 
 	for _, f := range functions {
