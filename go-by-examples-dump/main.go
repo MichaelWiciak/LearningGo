@@ -2079,6 +2079,52 @@ func command_line_flags() {
 	fmt.Println("tail:", flag.Args())
 }
 
+func command_line_sub_arguments() {
+
+	fooCmd := flag.NewFlagSet("foo", flag.ExitOnError)
+	fooEnable := fooCmd.Bool("enable", false, "enable")
+	fooName := fooCmd.String("name", "", "name")
+
+	barCmd := flag.NewFlagSet("bar", flag.ExitOnError)
+	barLevel := barCmd.Int("level", 0, "level")
+
+	if len(os.Args) < 2 {
+		fmt.Println("expected 'foo' or 'bar' subcommands")
+		os.Exit(1)
+	}
+
+	switch os.Args[1] {
+
+	case "foo":
+		fooCmd.Parse(os.Args[2:])
+		fmt.Println("subcommand 'foo'")
+		fmt.Println("  enable:", *fooEnable)
+		fmt.Println("  name:", *fooName)
+		fmt.Println("  tail:", fooCmd.Args())
+	case "bar":
+		barCmd.Parse(os.Args[2:])
+		fmt.Println("subcommand 'bar'")
+		fmt.Println("  level:", *barLevel)
+		fmt.Println("  tail:", barCmd.Args())
+	default:
+		fmt.Println("expected 'foo' or 'bar' subcommands")
+		os.Exit(1)
+	}
+}
+
+func environment_variables() {
+
+	os.Setenv("FOO", "1")
+	fmt.Println("FOO:", os.Getenv("FOO"))
+	fmt.Println("BAR:", os.Getenv("BAR"))
+
+	fmt.Println()
+	for _, e := range os.Environ() {
+		pair := stdstrings.SplitN(e, "=", 2)
+		fmt.Println(pair[0])
+	}
+}
+
 func main() {
 
 	functions := []Function{
@@ -2149,6 +2195,8 @@ func main() {
 		{"Embed Directives", embed_directive},
 		{"Command Line Arguments", command_line_arguments},
 		{"Command Line Flags", command_line_flags},
+		{"Command Line Sub Arguments", command_line_sub_arguments},
+		{"Environment variables", environment_variables},
 	}
 
 	for _, f := range functions {

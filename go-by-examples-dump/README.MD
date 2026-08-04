@@ -1,7 +1,7 @@
 Either
 ```bash
 go build main.go
-./main -word=opt -numb=7 -fork -svar=flag
+./main foo -enable -name=joe a1 a2
 ```
 or 
 ```bash
