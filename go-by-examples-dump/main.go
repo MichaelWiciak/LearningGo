@@ -2178,6 +2178,26 @@ func http_client() {
 	}
 }
 
+func hello(w http.ResponseWriter, req *http.Request) {
+
+	fmt.Fprintf(w, "hello\n")
+}
+
+func headers(w http.ResponseWriter, req *http.Request) {
+
+	for name, headers := range req.Header {
+		for _, h := range headers {
+			fmt.Fprintf(w, "%v: %v\n", name, h)
+		}
+	}
+}
+
+func http_server() {
+
+	http.HandleFunc("/hello", hello)
+	http.HandleFunc("/headers", headers)
+}
+
 func main() {
 
 	functions := []Function{
@@ -2252,6 +2272,7 @@ func main() {
 		{"Environment variables", environment_variables},
 		{"Logging", logging},
 		{"HTTP Client", http_client},
+		{"HTTP Server", http_server},
 	}
 
 	for _, f := range functions {
@@ -2259,5 +2280,7 @@ func main() {
 		f.Run()
 		func_separator()
 	}
+
+	http.ListenAndServe(":8090", nil)
 
 }
