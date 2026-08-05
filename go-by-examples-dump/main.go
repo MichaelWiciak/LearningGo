@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"cmp"
 	"crypto/sha256"
+	"context"
 	"embed"
 	b64 "encoding/base64"
 	"encoding/json"
@@ -26,6 +27,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"regexp"
 	"slices"
@@ -2328,6 +2330,20 @@ func exec_processes() {
     }
 }
 
+func signals() {
+
+    ctx, stop := signal.NotifyContext(
+        context.Background(), syscall.SIGINT, syscall.SIGTERM)
+    defer stop()
+
+    fmt.Println("awaiting signal")
+    <-ctx.Done()
+
+    fmt.Println()
+    fmt.Println(context.Cause(ctx))
+    fmt.Println("exiting")
+}
+
 func main() {
 
 	functions := []Function{
@@ -2406,6 +2422,7 @@ func main() {
 		{"TCP Server", tcp_server},
 		{"Spawning Processes", spawning_processes},
 		{"Exec ing processes", exec_processes},
+		{"Signals", signals},
 	}
 
 	for _, f := range functions {
