@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"bytes"
 	"cmp"
-	"crypto/sha256"
 	"context"
+	"crypto/sha256"
 	"embed"
 	b64 "encoding/base64"
 	"encoding/json"
@@ -2185,18 +2185,18 @@ func http_client() {
 
 func hello(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
-    fmt.Println("server: hello handler started")
-    defer fmt.Println("server: hello handler ended")
+	fmt.Println("server: hello handler started")
+	defer fmt.Println("server: hello handler ended")
 
-    select {
-    case <-time.After(1 * time.Second):
-        fmt.Fprintf(w, "hello\n")
-    case <-ctx.Done():
-        err := ctx.Err()
-        fmt.Println("server:", err)
-        internalError := http.StatusInternalServerError
-        http.Error(w, err.Error(), internalError)
-    }
+	select {
+	case <-time.After(1 * time.Second):
+		fmt.Fprintf(w, "hello\n")
+	case <-ctx.Done():
+		err := ctx.Err()
+		fmt.Println("server:", err)
+		internalError := http.StatusInternalServerError
+		http.Error(w, err.Error(), internalError)
+	}
 }
 
 func headers(w http.ResponseWriter, req *http.Request) {
@@ -2270,78 +2270,85 @@ func tcp_server() {
 
 func spawning_processes() {
 
-    dateCmd := exec.Command("date")
+	dateCmd := exec.Command("date")
 
-    dateOut, err := dateCmd.Output()
-    if err != nil {
-        panic(err)
-    }
-    fmt.Println("> date")
-    fmt.Println(string(dateOut))
+	dateOut, err := dateCmd.Output()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("> date")
+	fmt.Println(string(dateOut))
 
-    _, err = exec.Command("date", "-x").Output()
-    if err != nil {
-        if e, ok := errors.AsType[*exec.Error](err); ok {
-            fmt.Println("failed executing:", e)
-        } else if e, ok := errors.AsType[*exec.ExitError](err); ok {
-            exitCode := e.ExitCode()
-            fmt.Println("command exit rc =", exitCode)
-        } else {
-            panic(err)
-        }
-    }
+	_, err = exec.Command("date", "-x").Output()
+	if err != nil {
+		if e, ok := errors.AsType[*exec.Error](err); ok {
+			fmt.Println("failed executing:", e)
+		} else if e, ok := errors.AsType[*exec.ExitError](err); ok {
+			exitCode := e.ExitCode()
+			fmt.Println("command exit rc =", exitCode)
+		} else {
+			panic(err)
+		}
+	}
 
-    grepCmd := exec.Command("grep", "hello")
+	grepCmd := exec.Command("grep", "hello")
 
-    grepIn, _ := grepCmd.StdinPipe()
-    grepOut, _ := grepCmd.StdoutPipe()
-    grepCmd.Start()
-    grepIn.Write([]byte("hello grep\ngoodbye grep"))
-    grepIn.Close()
-    grepBytes, _ := io.ReadAll(grepOut)
-    grepCmd.Wait()
+	grepIn, _ := grepCmd.StdinPipe()
+	grepOut, _ := grepCmd.StdoutPipe()
+	grepCmd.Start()
+	grepIn.Write([]byte("hello grep\ngoodbye grep"))
+	grepIn.Close()
+	grepBytes, _ := io.ReadAll(grepOut)
+	grepCmd.Wait()
 
-    fmt.Println("> grep hello")
-    fmt.Println(string(grepBytes))
+	fmt.Println("> grep hello")
+	fmt.Println(string(grepBytes))
 
-    lsCmd := exec.Command("bash", "-c", "ls -a -l -h")
-    lsOut, err := lsCmd.Output()
-    if err != nil {
-        panic(err)
-    }
-    fmt.Println("> ls -a -l -h")
-    fmt.Println(string(lsOut))
+	lsCmd := exec.Command("bash", "-c", "ls -a -l -h")
+	lsOut, err := lsCmd.Output()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("> ls -a -l -h")
+	fmt.Println(string(lsOut))
 }
 
 func exec_processes() {
 
-    binary, lookErr := exec.LookPath("ls")
-    if lookErr != nil {
-        panic(lookErr)
-    }
+	binary, lookErr := exec.LookPath("ls")
+	if lookErr != nil {
+		panic(lookErr)
+	}
 
-    args := []string{"ls", "-a", "-l", "-h"}
+	args := []string{"ls", "-a", "-l", "-h"}
 
-    env := os.Environ()
+	env := os.Environ()
 
-    execErr := syscall.Exec(binary, args, env)
-    if execErr != nil {
-        panic(execErr)
-    }
+	execErr := syscall.Exec(binary, args, env)
+	if execErr != nil {
+		panic(execErr)
+	}
 }
 
-func signals() {
+func signals_example() {
 
-    ctx, stop := signal.NotifyContext(
-        context.Background(), syscall.SIGINT, syscall.SIGTERM)
-    defer stop()
+	ctx, stop := signal.NotifyContext(
+		context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 
-    fmt.Println("awaiting signal")
-    <-ctx.Done()
+	fmt.Println("awaiting signal")
+	<-ctx.Done()
 
-    fmt.Println()
-    fmt.Println(context.Cause(ctx))
-    fmt.Println("exiting")
+	fmt.Println()
+	fmt.Println(context.Cause(ctx))
+	fmt.Println("exiting")
+}
+
+func exitting() {
+
+	defer fmt.Println("!")
+
+	os.Exit(3)
 }
 
 func main() {
@@ -2421,8 +2428,9 @@ func main() {
 		{"HTTP Server", http_server},
 		{"TCP Server", tcp_server},
 		{"Spawning Processes", spawning_processes},
+		{"Signals", signals_example},
 		{"Exec ing processes", exec_processes},
-		{"Signals", signals},
+		{"Exitting", exitting},
 	}
 
 	for _, f := range functions {
