@@ -52,3 +52,7 @@ A slice is like an array, except that its size changes dynamically as you add an
 and then can just run the module by calling the name of the package. export it to the .bash file to have it on permanently.
 
 `go work init ./x` to initialize a workspace with the `x` module. This allows you to manage multiple modules together in a single workspace, making it easier to work on related projects without needing to manage separate `go.mod` files for each module.
+
+
+
+`gofmt` shows the program is the format go formatter will save it as. pass in the name of the file to check. 
