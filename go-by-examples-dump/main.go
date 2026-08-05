@@ -2221,6 +2221,38 @@ func http_server() {
 	}
 }
 
+func tcp_server() {
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		panic(err)
+	}
+	defer listener.Close()
+
+	go func() {
+		conn, err := listener.Accept()
+		if err != nil {
+			return
+		}
+		defer conn.Close()
+
+		message, _ := bufio.NewReader(conn).ReadString('\n')
+		fmt.Printf("[Server received]: %s", message)
+
+		fmt.Fprintf(conn, "Server ACK: %s", message)
+	}()
+
+	conn, err := net.Dial("tcp", listener.Addr().String())
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+
+	fmt.Fprintf(conn, "Hello from netcat\n")
+
+	response, _ := bufio.NewReader(conn).ReadString('\n')
+	fmt.Printf("[Client received]: %s", response)
+}
+
 func main() {
 
 	functions := []Function{
@@ -2296,6 +2328,7 @@ func main() {
 		{"Logging", logging},
 		{"HTTP Client", http_client},
 		{"HTTP Server", http_server},
+		{"TCP Server", tcp_server},
 	}
 
 	for _, f := range functions {
