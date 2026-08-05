@@ -25,6 +25,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"slices"
@@ -32,6 +33,7 @@ import (
 	stdstrings "strings"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"text/template"
 	"time"
 	"unicode/utf8"
@@ -2264,6 +2266,68 @@ func tcp_server() {
 	fmt.Printf("[Client received]: %s", response)
 }
 
+func spawning_processes() {
+
+    dateCmd := exec.Command("date")
+
+    dateOut, err := dateCmd.Output()
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println("> date")
+    fmt.Println(string(dateOut))
+
+    _, err = exec.Command("date", "-x").Output()
+    if err != nil {
+        if e, ok := errors.AsType[*exec.Error](err); ok {
+            fmt.Println("failed executing:", e)
+        } else if e, ok := errors.AsType[*exec.ExitError](err); ok {
+            exitCode := e.ExitCode()
+            fmt.Println("command exit rc =", exitCode)
+        } else {
+            panic(err)
+        }
+    }
+
+    grepCmd := exec.Command("grep", "hello")
+
+    grepIn, _ := grepCmd.StdinPipe()
+    grepOut, _ := grepCmd.StdoutPipe()
+    grepCmd.Start()
+    grepIn.Write([]byte("hello grep\ngoodbye grep"))
+    grepIn.Close()
+    grepBytes, _ := io.ReadAll(grepOut)
+    grepCmd.Wait()
+
+    fmt.Println("> grep hello")
+    fmt.Println(string(grepBytes))
+
+    lsCmd := exec.Command("bash", "-c", "ls -a -l -h")
+    lsOut, err := lsCmd.Output()
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println("> ls -a -l -h")
+    fmt.Println(string(lsOut))
+}
+
+func exec_processes() {
+
+    binary, lookErr := exec.LookPath("ls")
+    if lookErr != nil {
+        panic(lookErr)
+    }
+
+    args := []string{"ls", "-a", "-l", "-h"}
+
+    env := os.Environ()
+
+    execErr := syscall.Exec(binary, args, env)
+    if execErr != nil {
+        panic(execErr)
+    }
+}
+
 func main() {
 
 	functions := []Function{
@@ -2340,6 +2404,8 @@ func main() {
 		{"HTTP Client", http_client},
 		{"HTTP Server", http_server},
 		{"TCP Server", tcp_server},
+		{"Spawning Processes", spawning_processes},
+		{"Exec ing processes", exec_processes},
 	}
 
 	for _, f := range functions {
