@@ -22,6 +22,7 @@ import (
 	"math/rand/v2"
 	"net"
 	"net/http"
+	"net/http/httptest"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -2193,9 +2194,31 @@ func headers(w http.ResponseWriter, req *http.Request) {
 }
 
 func http_server() {
+	// Create a dedicated router instead of using the global DefaultServeMux
+	mux := http.NewServeMux()
+	mux.HandleFunc("/hello", hello)
+	mux.HandleFunc("/headers", headers)
 
-	http.HandleFunc("/hello", hello)
-	http.HandleFunc("/headers", headers)
+	// Start an in-memory test server
+	ts := httptest.NewServer(mux)
+	defer ts.Close()
+
+	// Hit the endpoints
+	resp, err := http.Get(ts.URL + "/hello")
+	if err == nil {
+		body, _ := io.ReadAll(resp.Body)
+		fmt.Println("GET /hello ->", resp.Status)
+		fmt.Print(string(body))
+		resp.Body.Close()
+	}
+
+	resp, err = http.Get(ts.URL + "/headers")
+	if err == nil {
+		body, _ := io.ReadAll(resp.Body)
+		fmt.Println("GET /headers ->", resp.Status)
+		fmt.Print(string(body))
+		resp.Body.Close()
+	}
 }
 
 func main() {
@@ -2280,7 +2303,5 @@ func main() {
 		f.Run()
 		func_separator()
 	}
-
-	http.ListenAndServe(":8090", nil)
 
 }
